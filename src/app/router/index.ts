@@ -1,5 +1,5 @@
 import expess from 'express';
-import { testRouter } from '../modules/test/test.controler';
+import { testRouter } from '../modules/test/test.router';
 const router = expess.Router();
 
 const modulesRoutes = [
