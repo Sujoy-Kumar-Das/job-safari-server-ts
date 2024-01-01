@@ -1,11 +1,16 @@
 import expess from 'express';
 import { testRouter } from '../modules/test/test.router';
+import { userRouter } from '../modules/subUser/subUser.router';
 const router = expess.Router();
 
 const modulesRoutes = [
   {
-    path: '/api',
+    path: '/',
     route: testRouter,
+  },
+  {
+    path: '/users',
+    route: userRouter,
   },
 ];
 
