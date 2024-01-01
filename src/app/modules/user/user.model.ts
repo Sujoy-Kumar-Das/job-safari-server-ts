@@ -1,9 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { IUser, IUserName } from './user.interface';
-import { gender, userStatus } from './user.constant';
+import { IUser, IUserMethod, IUserName, Tgender } from './user.interface';
+
+export const gender: Tgender[] = ['male', 'female', 'other'];
+
 
 const UserNameSchema = new Schema<IUserName>({
-  fristName: {
+  firstName: {
     type: String,
     required: [true, 'Users Frist name is required.'],
   },
@@ -16,38 +18,35 @@ const UserNameSchema = new Schema<IUserName>({
   },
 });
 
-export const UserSchema = new Schema<IUser>({
-  userId: Schema.Types.ObjectId,
-  name: {
-    type: UserNameSchema,
-    required: [true, 'User name is required.'],
+export const UserSchema = new Schema<IUser, IUserMethod>(
+  {
+    userId: Schema.Types.ObjectId,
+    name: {
+      type: UserNameSchema,
+      required: [true, 'User name is required.'],
+    },
+    email: {
+      type: String,
+      required: [true, 'User email address is required.'],
+      unique: true,
+    },
+    photoURL: {
+      type: String,
+      required: [true, 'Users photo is required.'],
+    },
+    gender: {
+      type: String,
+      enum: gender,
+    },
   },
-  email: {
-    type: String,
-    required: [true, 'User email address is required.'],
-    unique: true,
+  {
+    timestamps: true,
   },
-  password: {
-    type: String,
-    required: [true, 'Password is required.'],
-  },
-  photoURL: {
-    type: String,
-    required: [true, 'Users photo is required.'],
-  },
-  status: {
-    type: String,
-    enum: userStatus,
-    default: 'in-progress',
-  },
-  gender: {
-    type: String,
-    enum: gender,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-});
+);
 
-export const UserModel = model<IUser>('user', UserSchema);
+UserSchema.statics.isUserExists = async function (email: string) {
+  const user = await UserModel.findOne({ email });
+  return user;
+};
+
+export const UserModel = model<IUser, IUserMethod>('user', UserSchema);

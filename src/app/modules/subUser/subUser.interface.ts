@@ -1,6 +1,14 @@
+
+
+export type TUserStatus = 'block' | 'in-progress';
+
 export interface ISubUser {
   email: string;
   password: string;
-  status: 'block' | 'in-progress';
+  status: TUserStatus;
+  role: 'user' | 'admin';
   isDeleted: false;
 }
+
+
+

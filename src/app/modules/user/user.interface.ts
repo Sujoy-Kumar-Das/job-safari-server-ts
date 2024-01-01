@@ -1,21 +1,20 @@
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export interface IUserName {
-  fristName: string;
+  firstName: string;
   middleName?: string;
   lastName: string;
 }
-
-export type TUserStatus = 'block' | 'in-progress';
 export type Tgender = 'male' | 'female' | 'other';
 
 export interface IUser {
   userId: Types.ObjectId;
   name: IUserName;
   email: string;
-  password: string;
   photoURL: string;
   gender: Tgender;
-  status: TUserStatus;
-  isDeleted: boolean;
+}
+
+export interface IUserMethod extends Model<IUser> {
+  isUserExists(id: string): Promise<IUser | null>;
 }

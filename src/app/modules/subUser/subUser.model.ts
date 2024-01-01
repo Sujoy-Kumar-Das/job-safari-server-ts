@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { ISubUser } from './subUser.interface';
-import { userStatus } from '../user/user.constant';
+import { ISubUser, TUserStatus } from './subUser.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
+
+export const userStatus: TUserStatus[] = ['block', 'in-progress'];
 
 const SubUserSchema = new Schema<ISubUser>(
   {
@@ -11,6 +15,11 @@ const SubUserSchema = new Schema<ISubUser>(
     password: {
       type: String,
       required: [true, 'Password is requird.'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
     status: {
       type: String,
@@ -26,5 +35,14 @@ const SubUserSchema = new Schema<ISubUser>(
     timestamps: true,
   },
 );
+
+SubUserSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password as string,
+    Number(config.SALT_ROUND),
+  );
+  next();
+});
 
 export const SubUserModel = model<ISubUser>('subUser', SubUserSchema);

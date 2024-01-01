@@ -10,4 +10,10 @@ router.post(
   userControler.createUserControler,
 );
 
+router.post(
+  '/create-admin',
+  validateData(userValidationSchema.createUserValidationSchema),
+  userControler.createAdminControler,
+);
+
 export const userRouter = router;
